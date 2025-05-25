@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection Agent</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --danger-color: #d33f49;
+            --safe-color: #4caf50;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --warning-color: #ffc107;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .input-section, .results-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .result-card {
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .phishing {
+            background-color: var(--danger-color);
+        }
+
+        .legitimate {
+            background-color: var(--safe-color);
+        }
+
+        .suspicious {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .confidence-meter {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .confidence-level {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .features-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .features-table th, .features-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .features-table th {
+            background-color: #f2f2f2;
+        }
+
+        .history-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .history-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-item.phishing {
+            border-left: 5px solid var(--danger-color);
+        }
+
+        .history-item.legitimate {
+            border-left: 5px solid var(--safe-color);
+        }
+
+        .history-item.suspicious {
+            border-left: 5px solid var(--warning-color);
+        }
+
+        .history-item h4 {
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-item p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Phishing Detection Agent</h1>
+            <p class="description">Analyze emails and websites to detect potential phishing attempts using advanced machine learning algorithms.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="app-container">
+            <div class="input-section">
+                <h2>Analyze Content</h2>
+                <form id="analysisForm">
+                    <div class="form-group">
+                        <label for="emailText">Email Text/Website Content:</label>
+                        <textarea id="emailText" placeholder="Paste the email content or website text here..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject (if email):</label>
+                        <input type="text" id="subject" placeholder="Email subject...">
+                    </div>
+                    <div class="form-group">
+                        <label for="senderDomain">Sender Domain:</label>
+                        <input type="text" id="senderDomain" placeholder="e.g., example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Features:</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="hasAttachment">
+                            <label for="hasAttachment">Contains Attachment</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="urgentKeywords">
+                            <label for="urgentKeywords">Urgent Language</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="linksCount">Number of Links (optional):</label>
+                        <input type="number" id="linksCount" min="0" placeholder="Leave blank to auto-detect">
+                    </div>
+                    <button type="submit">Analyze for Phishing</button>
+                </form>
+
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Analyzing content...</p>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2>Analysis Results</h2>
+                <div id="resultsContainer">
+                    <p>Submit content to analyze for phishing attempts. Results will appear here.</p>
+                </div>
+
+                <h3>Analysis History</h3>
+                <div id="historyContainer">
+                    <p>No analysis history yet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('analysisForm');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const historyContainer = document.getElementById('historyContainer');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            let analysisHistory = JSON.parse(localStorage.getItem('phishingAnalysisHistory')) || [];
+
+            // Display history if any exists
+            renderHistory();
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                resultsContainer.innerHTML = '<p>Analyzing content...</p>';
+                
+                // Gather form data
+                const emailText = document.getElementById('emailText').value;
+                const subject = document.getElementById('subject').value;
+                const senderDomain = document.getElementById('senderDomain').value;
+                const hasAttachment = document.getElementById('hasAttachment').checked;
+                const urgentKeywords = document.getElementById('urgentKeywords').checked;
+                const linksCount = document.getElementById('linksCount').value;
+                
+                // Prepare data for API
+                const requestData = {
+                    email_text: emailText,
+                    subject: subject,
+                    sender_domain: senderDomain,
+                    has_attachment: hasAttachment,
+                    urgent_keywords: urgentKeywords
+                };
+                
+                if (linksCount) {
+                    requestData.links_count = parseInt(linksCount);
+                }
+                
+                // Call API
+                fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading indicator
+                    loadingIndicator.style.display = 'none';
+                    
+                    if (data.error) {
+                        resultsContainer.innerHTML = `<div class="result-card suspicious">
+                            <h3>Error</h3>
+                            <p>${data.error}</p>
+                        </div>`;
+                        return;
+                    }
+                    
+                    // Display results
+                    displayResults(data, emailText, subject);
+                    
+                    // Add to history
+                    addToHistory(data, emailText, subject);
+                })
+                .catch(error => {
+                    loadingIndicator.style.display = 'none';
+                    resultsContainer.innerHTML = `<div class="result-card suspicious">
+                        <h3>Error</h3>
+                        <p>Failed to analyze content: ${error.message}</p>
+                    </div>`;
+                });
+            });
+            
+            function displayResults(data, originalText, subject) {
+                const isPhishing = data.prediction === 'phishing';
+                const confidencePercent = Math.round(data.confidence * 100);
+                
+                let resultClass = 'legitimate';
+                if (isPhishing) {
+                    resultClass = 'phishing';
+                } else if (data.probability > 0.3) {
+                    resultClass = 'suspicious';
+                }
+                
+                // Create features table rows
+                let featuresRows = '';
+                for (const [key, value] of Object.entries(data.features_used)) {
+                    // Format key for display
+                    const displayKey = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    featuresRows += `
+                        <tr>
+                            <td>${displayKey}</td>
+                            <td>${value}</td>
+                        </tr>
+                    `;
+                }
+                
+                resultsContainer.innerHTML = `
+                    <div class="result-card ${resultClass}">
+                        <h3>${isPhishing ? '⚠️ Phishing Detected!' : '✅ Likely Legitimate'}</h3>
+                        <p>This content is ${isPhishing ? 'likely' : 'unlikely'} to be a phishing attempt.</p>
+                        
+                        <div class="confidence-meter">
+                            <div class="confidence-level" style="width: ${confidencePercent}%"></div>
+                        </div>
+                        <p>Confidence: ${confidencePercent}%</p>
+                        
+                        <h4>Analysis Details:</h4>
+                        <table class="features-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${featuresRows}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="form-group">
+                        <h3>Original Content Preview</h3>
+                        <div style="background: white; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+                            ${subject ? `<p><strong>Subject:</strong> ${subject}</p>` : ''}
+                            <p>${originalText.substring(0, 500)}${originalText.length > 500 ? '...' : ''}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function addToHistory(data, originalText, subject) {
+                const historyItem = {
+                    id: Date.now(),
+                    timestamp: new Date().toISOString(),
+                    prediction: data.prediction,
+                    probability: data.probability,
+                    confidence: data.confidence,
+                    subject: subject,
+                    preview: originalText.substring(0, 100) + (originalText.length > 100 ? '...' : ''),
+                    features: data.features_used
+                };
+                
+                analysisHistory.unshift(historyItem);
+                if (analysisHistory.length > 10) {
+                    analysisHistory = analysisHistory.slice(0, 10);
+                }
+                
+                localStorage.setItem('phishingAnalysisHistory', JSON.stringify(analysisHistory));
+                renderHistory();
+            }
+            
+            function renderHistory() {
+                if (analysisHistory.length === 0) {
+                    historyContainer.innerHTML = '<p>No analysis history yet.</p>';
+                    return;
+                }
+                
+                let historyHTML = '';
+                analysisHistory.forEach(item => {
+                    const isPhishing = item.prediction === 'phishing';
+                    let itemClass = 'legitimate';
+                    if (isPhishing) {
+                        itemClass = 'phishing';
+                    } else if (item.probability > 0.3) {
+                        itemClass = 'suspicious';
+                    }
+                    
+                    const date = new Date(item.timestamp);
+                    const timeString = date.toLocaleTimeString();
+                    const dateString = date.toLocaleDateString();
+                    
+                    historyHTML += `
+                        <div class="history-item ${itemClass}" data-id="${item.id}">
+                            <h4>${item.subject || 'No Subject'}</h4>
+                            <p>${item.preview}</p>
+                            <p><small>${dateString} ${timeString} • ${isPhishing ? 'Phishing' : 'Legitimate'} (${Math.round(item.confidence * 100)}%)</small></p>
+                        </div>
+                    `;
+                });
+                
+                historyContainer.innerHTML = historyHTML;
+                
+                // Add click handlers to history items
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const id = parseInt(this.getAttribute('data-id'));
+                        const historyItem = analysisHistory.find(i => i.id === id);
+                        if (historyItem) {
+                            displayResults({
+                                prediction: historyItem.prediction,
+                                probability: historyItem.probability,
+                                confidence: historyItem.confidence,
+                                features_used: historyItem.features
+                            }, historyItem.preview, historyItem.subject);
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

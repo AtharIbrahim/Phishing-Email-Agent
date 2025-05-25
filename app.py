@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import joblib
+from oslo_middleware import CORS
 import pandas as pd
 import os
 import re
@@ -8,6 +9,7 @@ import tldextract
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Load the model at startup
 model = None
@@ -18,6 +20,7 @@ def load_model():
         from train import train_and_save_model
         train_and_save_model()
     model = joblib.load('models/phishing_detection_model.pkl')
+    print("Model loaded successfully")
 
 load_model()
 
@@ -113,12 +116,24 @@ def extract_features_from_email(email_text, subject="", has_attachment=None, lin
 def home():
     return render_template('index.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
     try:
+        # Handle OPTIONS request for CORS preflight
+        if request.method == 'OPTIONS':
+            response = jsonify({'status': 'preflight'})
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+            response.headers.add('Access-Control-Allow-Methods', 'POST')
+            return response
+
         # Get data from request
         data = request.get_json()
+        print("Received data:", data)  # Debugging
         
+        if not data:
+            return jsonify({'error': 'No data received'}), 400
+
         # Extract features with smart defaults
         features = extract_features_from_email(
             email_text=data.get('email_text', ''),
@@ -128,6 +143,7 @@ def predict():
             sender_domain=data.get('sender_domain'),
             urgent_keywords=data.get('urgent_keywords')
         )
+        print("Extracted features:", features)  # Debugging
         
         # Create a DataFrame with the features
         input_data = pd.DataFrame([features])
@@ -135,6 +151,7 @@ def predict():
         # Make prediction
         prediction = model.predict(input_data)
         probability = model.predict_proba(input_data)
+        print("Prediction results:", prediction, probability)  # Debugging
         
         # Prepare response
         response = {
@@ -143,13 +160,14 @@ def predict():
             'confidence': float(max(probability[0])),
             'features_used': {
                 k: v for k, v in features.items() 
-                if k not in ['email_text', 'subject']  # Exclude large text fields
+                if k not in ['email_text', 'subject']
             }
         }
         
         return jsonify(response)
     
     except Exception as e:
+        print("Error:", str(e))  # Debugging
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
