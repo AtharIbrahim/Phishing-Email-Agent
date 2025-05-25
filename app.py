@@ -153,3 +153,15 @@ if __name__ == '__main__':
 # curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Reset your password now to avoid lockout.\", \"subject\": \"Password Reset Required\", \"has_attachment\": 0, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
 # curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Your Netflix account has been suspended.\", \"subject\": \"Netflix Account Notice\", \"has_attachment\": 1, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
 # curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"our account is on hold. Log in now to avoid suspension.\"}"
+
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Your account has been compromised. Click here to secure it!\", \"subject\": \"Urgent: Account Security Alert\", \"has_attachment\": 0, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Can you review my document?\"}"
+
+
+
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Reset your password now to avoid lockout. Click here to secure it!\", \"subject\": \"Urgent: Account Security Alert\", \"has_attachment\": 0, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Final notice: subscription expired.\", \"subject\": \"Unusual Login Attempt\", \"has_attachment\": 1, \"links_count\": 2, \"sender_domain\": \"travelprizes.org\", \"urgent_keywords\": 1}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Monthly newsletter - May Edition\", \"subject\": \"Company Newsletter\", \"has_attachment\": 0, \"links_count\": 0, \"sender_domain\": \"company.com\", \"urgent_keywords\": 0}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Reset your password now to avoid lockout.\", \"subject\": \"Password Reset Required\", \"has_attachment\": 0, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"Your Netflix account has been suspended.\", \"subject\": \"Netflix Account Notice\", \"has_attachment\": 1, \"links_count\": 2, \"sender_domain\": \"security-alert.com\", \"urgent_keywords\": 1}"
+# curl -X POST http://127.0.0.1:5000/predict -H "Content-Type: application/json" -d "{\"email_text\": \"our account is on hold. Log in now to avoid suspension.\"}"
