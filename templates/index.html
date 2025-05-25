@@ -3,70 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phishing Detection Agent</title>
+    <title>PhishShield - Advanced Phishing Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4a6fa5;
-            --secondary-color: #166088;
-            --danger-color: #d33f49;
-            --safe-color: #4caf50;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-            --warning-color: #ffc107;
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #3f37c9;
+            --danger: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         }
 
         body {
-            background-color: #f5f5f5;
-            color: var(--dark-color);
+            background-color: #f5f7ff;
+            color: var(--dark);
             line-height: 1.6;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 20px 0;
-            text-align: center;
+            padding: 30px 0;
             margin-bottom: 30px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.15);
+            position: relative;
+            overflow: hidden;
         }
 
-        h1 {
-            margin-bottom: 10px;
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
         }
 
-        .description {
-            max-width: 800px;
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .app-container {
+            padding: 0 30px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
             gap: 20px;
         }
 
-        .input-section, .results-section {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            padding: 20px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .drag-drop-area {
+            border: 2px dashed var(--gray);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+            background-color: var(--light);
+        }
+
+        .drag-drop-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .drag-drop-area.active {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .drag-drop-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .drag-drop-text {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .drag-drop-hint {
+            font-size: 14px;
+            color: var(--gray);
+            opacity: 0.8;
         }
 
         .form-group {
@@ -75,22 +196,32 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
         }
 
         input[type="text"],
         textarea,
         select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
 
         textarea {
-            min-height: 150px;
+            min-height: 180px;
             resize: vertical;
         }
 
@@ -98,126 +229,248 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 10px;
         }
 
-        button {
-            background-color: var(--primary-color);
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 12px 24px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        button:hover {
-            background-color: var(--secondary-color);
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-dark);
+            box-shadow: none;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #d3166b;
         }
 
         .result-card {
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
             color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
         }
 
         .phishing {
-            background-color: var(--danger-color);
+            background: linear-gradient(135deg, var(--danger), #c9184a);
         }
 
         .legitimate {
-            background-color: var(--safe-color);
+            background: linear-gradient(135deg, var(--success), #4895ef);
         }
 
         .suspicious {
-            background-color: var(--warning-color);
-            color: var(--dark-color);
+            background: linear-gradient(135deg, var(--warning), #f3722c);
+            color: var(--dark);
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .confidence-meter {
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            margin: 10px 0;
+            height: 12px;
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 6px;
+            margin: 15px 0;
             overflow: hidden;
         }
 
         .confidence-level {
             height: 100%;
-            background-color: var(--primary-color);
+            background-color: white;
             width: 0%;
-            transition: width 0.5s;
+            transition: width 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
 
         .features-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         .features-table th, .features-table td {
-            padding: 10px;
+            padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
         .features-table th {
-            background-color: #f2f2f2;
+            background-color: rgba(0,0,0,0.1);
+            font-weight: 500;
+        }
+
+        .features-table tr:nth-child(even) {
+            background-color: rgba(255,255,255,0.1);
         }
 
         .history-item {
             background: white;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
+            border-left: 4px solid var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .history-item:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .history-item.phishing {
-            border-left: 5px solid var(--danger-color);
+            border-left-color: var(--danger);
         }
 
         .history-item.legitimate {
-            border-left: 5px solid var(--safe-color);
+            border-left-color: var(--success);
         }
 
         .history-item.suspicious {
-            border-left: 5px solid var(--warning-color);
+            border-left-color: var(--warning);
         }
 
-        .history-item h4 {
+        .history-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .history-title {
             margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .history-preview {
+            color: var(--gray);
+            font-size: 14px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .history-item p {
-            color: #666;
-            font-size: 14px;
+        .history-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-left: 15px;
+        }
+
+        .history-date {
+            font-size: 12px;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+
+        .history-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .badge-phishing {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .badge-legitimate {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .badge-suspicious {
+            background-color: var(--warning);
+            color: var(--dark);
         }
 
         .loading {
             display: none;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
+            border: 4px solid rgba(67, 97, 238, 0.1);
             border-radius: 50%;
-            border-top: 4px solid var(--primary-color);
-            width: 30px;
-            height: 30px;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
+            margin-bottom: 15px;
         }
 
         @keyframes spin {
@@ -225,55 +478,255 @@
             100% { transform: rotate(360deg); }
         }
 
+        .file-info {
+            display: none;
+            background-color: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .file-details {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .remove-file {
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .remove-file:hover {
+            transform: scale(1.2);
+        }
+
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
-            .app-container {
+            .header-content {
                 flex-direction: column;
+                text-align: center;
+                padding: 0 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Phishing Detection Agent</h1>
-            <p class="description">Analyze emails and websites to detect potential phishing attempts using advanced machine learning algorithms.</p>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>PhishShield</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
     <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalScans">0</div>
+                <div class="stat-label">Total Scans</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="phishingDetected">0</div>
+                <div class="stat-label">Phishing Detected</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="legitimateFound">0</div>
+                <div class="stat-label">Legitimate Found</div>
+            </div>
+        </div>
+
         <div class="app-container">
-            <div class="input-section">
-                <h2>Analyze Content</h2>
-                <form id="analysisForm">
-                    <div class="form-group">
-                        <label for="emailText">Email Text/Website Content:</label>
-                        <textarea id="emailText" placeholder="Paste the email content or website text here..."></textarea>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-envelope"></i> Email Analysis</h2>
+                    <div class="tooltip">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="tooltiptext">Drag & drop an email file (.eml) or paste content manually to analyze for phishing attempts</span>
                     </div>
-                    <div class="form-group">
-                        <label for="subject">Subject (if email):</label>
-                        <input type="text" id="subject" placeholder="Email subject...">
+                </div>
+
+                <div class="tab-container">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="drag-drop"><i class="fas fa-file-import"></i> Drag & Drop</div>
+                        <div class="tab" data-tab="manual"><i class="fas fa-keyboard"></i> Manual Input</div>
                     </div>
-                    <div class="form-group">
-                        <label for="senderDomain">Sender Domain:</label>
-                        <input type="text" id="senderDomain" placeholder="e.g., example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Additional Features:</label>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="hasAttachment">
-                            <label for="hasAttachment">Contains Attachment</label>
+                    <div class="tab-content active" id="drag-drop-tab">
+                        <div id="dragDropArea" class="drag-drop-area">
+                            <div class="drag-drop-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="drag-drop-text">Drag & drop your email file here</div>
+                            <div class="drag-drop-hint">or click to browse files (supports .eml, .msg, .txt)</div>
+                            <input type="file" id="fileInput" accept=".eml,.msg,.txt" style="display: none;">
                         </div>
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="urgentKeywords">
-                            <label for="urgentKeywords">Urgent Language</label>
+                        <div id="fileInfo" class="file-info">
+                            <div class="file-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="file-details">
+                                <div class="file-name" id="fileName">No file selected</div>
+                                <div class="file-size" id="fileSize">-</div>
+                            </div>
+                            <div class="remove-file" id="removeFile">
+                                <i class="fas fa-times"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="linksCount">Number of Links (optional):</label>
-                        <input type="number" id="linksCount" min="0" placeholder="Leave blank to auto-detect">
+                    <div class="tab-content" id="manual-tab">
+                        <form id="analysisForm">
+                            <div class="form-group">
+                                <label for="emailText">Email Content:</label>
+                                <textarea id="emailText" placeholder="Paste the email content here..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject:</label>
+                                <input type="text" id="subject" placeholder="Email subject...">
+                            </div>
+                            <div class="form-group">
+                                <label for="senderDomain">Sender Domain:</label>
+                                <input type="text" id="senderDomain" placeholder="e.g., example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Features:</label>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="hasAttachment">
+                                    <label for="hasAttachment">Contains Attachment</label>
+                                </div>
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="urgentKeywords">
+                                    <label for="urgentKeywords">Urgent Language</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn">
+                                <i class="fas fa-search"></i> Analyze for Phishing
+                            </button>
+                        </form>
                     </div>
-                    <button type="submit">Analyze for Phishing</button>
-                </form>
+                </div>
 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
@@ -281,15 +734,29 @@
                 </div>
             </div>
 
-            <div class="results-section">
-                <h2>Analysis Results</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Analysis Results</h2>
+                </div>
                 <div id="resultsContainer">
-                    <p>Submit content to analyze for phishing attempts. Results will appear here.</p>
+                    <div style="text-align: center; padding: 40px 20px;">
+                        <i class="fas fa-envelope-open-text" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                        <h3 style="color: var(--gray); margin-bottom: 10px;">No Analysis Performed Yet</h3>
+                        <p style="color: var(--gray);">Submit an email or content to analyze for phishing attempts.</p>
+                    </div>
                 </div>
 
-                <h3>Analysis History</h3>
+                <div class="card-header" style="margin-top: 30px;">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Analysis History</h2>
+                    <button id="clearHistory" class="btn btn-outline btn-sm" style="padding: 5px 10px; font-size: 13px;">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
                 <div id="historyContainer">
-                    <p>No analysis history yet.</p>
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-clock" style="font-size: 24px; color: var(--gray); margin-bottom: 10px;"></i>
+                        <p style="color: var(--gray);">No analysis history yet.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -297,22 +764,143 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
             const form = document.getElementById('analysisForm');
             const resultsContainer = document.getElementById('resultsContainer');
             const historyContainer = document.getElementById('historyContainer');
             const loadingIndicator = document.getElementById('loadingIndicator');
+            const dragDropArea = document.getElementById('dragDropArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileName = document.getElementById('fileName');
+            const fileSize = document.getElementById('fileSize');
+            const removeFile = document.getElementById('removeFile');
+            const clearHistory = document.getElementById('clearHistory');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
             
+            // Stats elements
+            const totalScansEl = document.getElementById('totalScans');
+            const phishingDetectedEl = document.getElementById('phishingDetected');
+            const legitimateFoundEl = document.getElementById('legitimateFound');
+            
+            // Analysis history
             let analysisHistory = JSON.parse(localStorage.getItem('phishingAnalysisHistory')) || [];
-
-            // Display history if any exists
+            let stats = JSON.parse(localStorage.getItem('phishingStats')) || {
+                total: 0,
+                phishing: 0,
+                legitimate: 0
+            };
+            
+            // Initialize UI
+            updateStats();
             renderHistory();
-
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Drag and drop functionality
+            dragDropArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dragDropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dragDropArea.classList.add('active');
+            }
+            
+            function unhighlight() {
+                dragDropArea.classList.remove('active');
+            }
+            
+            dragDropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    handleFileSelect({ target: { files: files } });
+                }
+            }
+            
+            function handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // Check file type
+                const validTypes = ['text/plain', 'message/rfc822', 'application/vnd.ms-outlook'];
+                const fileExt = file.name.split('.').pop().toLowerCase();
+                
+                if (!validTypes.includes(file.type)) {
+                    alert('Please upload a valid email file (.eml, .msg, .txt)');
+                    return;
+                }
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'flex';
+                
+                // Read file content
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    analyzeEmailContent(content, file.name);
+                };
+                reader.readAsText(file);
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            removeFile.addEventListener('click', function() {
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+            });
+            
+            // Form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                // Show loading indicator
-                loadingIndicator.style.display = 'block';
-                resultsContainer.innerHTML = '<p>Analyzing content...</p>';
                 
                 // Gather form data
                 const emailText = document.getElementById('emailText').value;
@@ -320,20 +908,82 @@
                 const senderDomain = document.getElementById('senderDomain').value;
                 const hasAttachment = document.getElementById('hasAttachment').checked;
                 const urgentKeywords = document.getElementById('urgentKeywords').checked;
-                const linksCount = document.getElementById('linksCount').value;
                 
-                // Prepare data for API
-                const requestData = {
+                if (!emailText.trim()) {
+                    alert('Please enter email content to analyze');
+                    return;
+                }
+                
+                analyzeContent({
                     email_text: emailText,
                     subject: subject,
                     sender_domain: senderDomain,
                     has_attachment: hasAttachment,
                     urgent_keywords: urgentKeywords
+                }, emailText, subject);
+            });
+            
+            // Clear history
+            clearHistory.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear all analysis history?')) {
+                    analysisHistory = [];
+                    localStorage.setItem('phishingAnalysisHistory', JSON.stringify(analysisHistory));
+                    renderHistory();
+                }
+            });
+            
+            // Analyze email content (for drag & drop)
+            function analyzeEmailContent(content, filename) {
+                showLoading();
+                
+                // Simple email parsing (for demo purposes)
+                // In a real app, you'd use a proper email parser library
+                let subject = '';
+                let from = '';
+                let body = content;
+                
+                // Try to extract subject and from headers
+                const subjectMatch = content.match(/^Subject:\s*(.*)$/mi);
+                if (subjectMatch) subject = subjectMatch[1];
+                
+                const fromMatch = content.match(/^From:\s*(.*)$/mi);
+                if (fromMatch) from = fromMatch[1];
+                
+                // Extract domain from From header
+                let senderDomain = '';
+                if (from) {
+                    const emailMatch = from.match(/<([^>]+)>/);
+                    const email = emailMatch ? emailMatch[1] : from;
+                    const domainMatch = email.match(/@([^\s]+)/);
+                    if (domainMatch) senderDomain = domainMatch[1];
+                }
+                
+                // Detect urgent keywords
+                const urgentPhrases = ['urgent', 'immediate', 'action required', 'verify now', 
+                                     'security alert', 'account suspended', 'password expired',
+                                     'click here', 'limited time', 'offer expires'];
+                const urgentKeywords = urgentPhrases.some(phrase => 
+                    content.toLowerCase().includes(phrase.toLowerCase()));
+                
+                // Count links
+                const links = content.match(/https?:\/\/[^\s<>"']+|www\.[^\s<>"']+/gi) || [];
+                
+                // Prepare data for API
+                const requestData = {
+                    email_text: content,
+                    subject: subject,
+                    sender_domain: senderDomain,
+                    has_attachment: content.toLowerCase().includes('content-disposition: attachment'),
+                    urgent_keywords: urgentKeywords,
+                    links_count: links.length
                 };
                 
-                if (linksCount) {
-                    requestData.links_count = parseInt(linksCount);
-                }
+                analyzeContent(requestData, content, subject, filename);
+            }
+            
+            // General content analysis function
+            function analyzeContent(requestData, originalText, subject, filename = null) {
+                showLoading();
                 
                 // Call API
                 fetch('http://127.0.0.1:5000/predict', {
@@ -345,41 +995,60 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Hide loading indicator
-                    loadingIndicator.style.display = 'none';
+                    hideLoading();
                     
                     if (data.error) {
-                        resultsContainer.innerHTML = `<div class="result-card suspicious">
-                            <h3>Error</h3>
-                            <p>${data.error}</p>
-                        </div>`;
+                        showError(data.error);
                         return;
                     }
                     
                     // Display results
-                    displayResults(data, emailText, subject);
+                    displayResults(data, originalText, subject, filename);
                     
                     // Add to history
-                    addToHistory(data, emailText, subject);
+                    addToHistory(data, originalText, subject, filename);
+                    
+                    // Update stats
+                    updateStats(data.prediction);
                 })
                 .catch(error => {
-                    loadingIndicator.style.display = 'none';
-                    resultsContainer.innerHTML = `<div class="result-card suspicious">
-                        <h3>Error</h3>
-                        <p>Failed to analyze content: ${error.message}</p>
-                    </div>`;
+                    hideLoading();
+                    showError(`Failed to analyze content: ${error.message}`);
                 });
-            });
+            }
             
-            function displayResults(data, originalText, subject) {
+            function showLoading() {
+                loadingIndicator.style.display = 'flex';
+                resultsContainer.innerHTML = '<p>Analyzing content...</p>';
+            }
+            
+            function hideLoading() {
+                loadingIndicator.style.display = 'none';
+            }
+            
+            function showError(message) {
+                resultsContainer.innerHTML = `<div class="result-card suspicious">
+                    <h3>Error</h3>
+                    <p>${message}</p>
+                </div>`;
+            }
+            
+            function displayResults(data, originalText, subject, filename = null) {
                 const isPhishing = data.prediction === 'phishing';
                 const confidencePercent = Math.round(data.confidence * 100);
                 
                 let resultClass = 'legitimate';
+                let resultIcon = 'fa-check-circle';
+                let resultTitle = '✅ Likely Legitimate';
+                
                 if (isPhishing) {
                     resultClass = 'phishing';
+                    resultIcon = 'fa-exclamation-triangle';
+                    resultTitle = '⚠️ Phishing Detected!';
                 } else if (data.probability > 0.3) {
                     resultClass = 'suspicious';
+                    resultIcon = 'fa-question-circle';
+                    resultTitle = '❓ Suspicious Content';
                 }
                 
                 // Create features table rows
@@ -397,7 +1066,10 @@
                 
                 resultsContainer.innerHTML = `
                     <div class="result-card ${resultClass}">
-                        <h3>${isPhishing ? '⚠️ Phishing Detected!' : '✅ Likely Legitimate'}</h3>
+                        <div class="result-title">
+                            <i class="fas ${resultIcon}"></i>
+                            ${resultTitle}
+                        </div>
                         <p>This content is ${isPhishing ? 'likely' : 'unlikely'} to be a phishing attempt.</p>
                         
                         <div class="confidence-meter">
@@ -421,7 +1093,8 @@
                     
                     <div class="form-group">
                         <h3>Original Content Preview</h3>
-                        <div style="background: white; padding: 15px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+                        <div style="background: white; padding: 15px; border-radius: 8px; max-height: 200px; overflow-y: auto;">
+                            ${filename ? `<p><strong>File:</strong> ${filename}</p>` : ''}
                             ${subject ? `<p><strong>Subject:</strong> ${subject}</p>` : ''}
                             <p>${originalText.substring(0, 500)}${originalText.length > 500 ? '...' : ''}</p>
                         </div>
@@ -429,21 +1102,22 @@
                 `;
             }
             
-            function addToHistory(data, originalText, subject) {
+            function addToHistory(data, originalText, subject, filename = null) {
                 const historyItem = {
                     id: Date.now(),
                     timestamp: new Date().toISOString(),
                     prediction: data.prediction,
                     probability: data.probability,
                     confidence: data.confidence,
-                    subject: subject,
+                    subject: subject || filename || 'No Subject',
                     preview: originalText.substring(0, 100) + (originalText.length > 100 ? '...' : ''),
+                    filename: filename,
                     features: data.features_used
                 };
                 
                 analysisHistory.unshift(historyItem);
-                if (analysisHistory.length > 10) {
-                    analysisHistory = analysisHistory.slice(0, 10);
+                if (analysisHistory.length > 20) {
+                    analysisHistory = analysisHistory.slice(0, 20);
                 }
                 
                 localStorage.setItem('phishingAnalysisHistory', JSON.stringify(analysisHistory));
@@ -452,7 +1126,12 @@
             
             function renderHistory() {
                 if (analysisHistory.length === 0) {
-                    historyContainer.innerHTML = '<p>No analysis history yet.</p>';
+                    historyContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-clock" style="font-size: 24px; color: var(--gray); margin-bottom: 10px;"></i>
+                            <p style="color: var(--gray);">No analysis history yet.</p>
+                        </div>
+                    `;
                     return;
                 }
                 
@@ -460,21 +1139,33 @@
                 analysisHistory.forEach(item => {
                     const isPhishing = item.prediction === 'phishing';
                     let itemClass = 'legitimate';
+                    let badgeClass = 'badge-legitimate';
+                    let badgeText = 'Legitimate';
+                    
                     if (isPhishing) {
                         itemClass = 'phishing';
+                        badgeClass = 'badge-phishing';
+                        badgeText = 'Phishing';
                     } else if (item.probability > 0.3) {
                         itemClass = 'suspicious';
+                        badgeClass = 'suspicious';
+                                                badgeText = 'Suspicious';
                     }
                     
                     const date = new Date(item.timestamp);
-                    const timeString = date.toLocaleTimeString();
+                    const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     const dateString = date.toLocaleDateString();
                     
                     historyHTML += `
                         <div class="history-item ${itemClass}" data-id="${item.id}">
-                            <h4>${item.subject || 'No Subject'}</h4>
-                            <p>${item.preview}</p>
-                            <p><small>${dateString} ${timeString} • ${isPhishing ? 'Phishing' : 'Legitimate'} (${Math.round(item.confidence * 100)}%)</small></p>
+                            <div class="history-content">
+                                <h4 class="history-title">${item.subject}</h4>
+                                <p class="history-preview">${item.preview}</p>
+                            </div>
+                            <div class="history-meta">
+                                <span class="history-date">${dateString} ${timeString}</span>
+                                <span class="history-badge ${badgeClass}">${badgeText} (${Math.round(item.confidence * 100)}%)</span>
+                            </div>
                         </div>
                     `;
                 });
@@ -492,10 +1183,108 @@
                                 probability: historyItem.probability,
                                 confidence: historyItem.confidence,
                                 features_used: historyItem.features
-                            }, historyItem.preview, historyItem.subject);
+                            }, historyItem.preview, historyItem.subject, historyItem.filename);
                         }
                     });
                 });
+            }
+            
+            function updateStats(newPrediction = null) {
+                if (newPrediction) {
+                    stats.total++;
+                    if (newPrediction === 'phishing') {
+                        stats.phishing++;
+                    } else {
+                        stats.legitimate++;
+                    }
+                    localStorage.setItem('phishingStats', JSON.stringify(stats));
+                }
+                
+                totalScansEl.textContent = stats.total;
+                phishingDetectedEl.textContent = stats.phishing;
+                legitimateFoundEl.textContent = stats.legitimate;
+                
+                // Animate the numbers
+                animateValue(totalScansEl, 0, stats.total, 1000);
+                animateValue(phishingDetectedEl, 0, stats.phishing, 1000);
+                animateValue(legitimateFoundEl, 0, stats.legitimate, 1000);
+            }
+            
+            function animateValue(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    element.textContent = Math.floor(progress * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+            
+            // Initialize with sample history if empty (for demo purposes)
+            if (analysisHistory.length === 0 && stats.total === 0) {
+                const sampleDate = new Date();
+                sampleDate.setDate(sampleDate.getDate() - 1);
+                
+                analysisHistory = [
+                    {
+                        id: 1,
+                        timestamp: sampleDate.toISOString(),
+                        prediction: 'phishing',
+                        probability: 0.92,
+                        confidence: 0.95,
+                        subject: 'Urgent: Your account has been compromised',
+                        preview: 'Dear customer, we detected suspicious activity on your account. Please click the link below to verify your identity immediately...',
+                        features: {
+                            email_length: 342,
+                            subject_length: 32,
+                            has_attachment: 0,
+                            links_count: 3,
+                            urgent_keywords: 1,
+                            domain_length: 15,
+                            subdomain_count: 2,
+                            hyphen_count: 0,
+                            digit_count: 0,
+                            special_chars: 12,
+                            html_tags: 4
+                        }
+                    },
+                    {
+                        id: 2,
+                        timestamp: new Date().toISOString(),
+                        prediction: 'legitimate',
+                        probability: 0.15,
+                        confidence: 0.85,
+                        subject: 'Your monthly newsletter',
+                        preview: 'Hello valued customer, here are this month\'s updates from our team. We appreciate your continued business...',
+                        features: {
+                            email_length: 512,
+                            subject_length: 21,
+                            has_attachment: 0,
+                            links_count: 2,
+                            urgent_keywords: 0,
+                            domain_length: 18,
+                            subdomain_count: 1,
+                            hyphen_count: 0,
+                            digit_count: 0,
+                            special_chars: 8,
+                            html_tags: 6
+                        }
+                    }
+                ];
+                
+                stats = {
+                    total: 2,
+                    phishing: 1,
+                    legitimate: 1
+                };
+                
+                localStorage.setItem('phishingAnalysisHistory', JSON.stringify(analysisHistory));
+                localStorage.setItem('phishingStats', JSON.stringify(stats));
+                updateStats();
+                renderHistory();
             }
         });
     </script>
