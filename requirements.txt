@@ -1,0 +1,8 @@
+flask
+pandas
+numpy
+scikit-learn
+joblib
+scipy
+oslo.middleware
+tldextract
