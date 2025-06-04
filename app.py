@@ -9,9 +9,9 @@ import tldextract
 import numpy as np
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app) 
 
-# Load the model at startup
+
 model = None
 def load_model():
     global model
@@ -48,7 +48,7 @@ def extract_features_from_email(email_text, subject="", has_attachment=None, lin
     """
     Extract features from available email data with smart defaults for missing values
     """
-    # Default values
+   
     features = {
         'email_text': email_text if email_text else "",
         'subject': subject if subject else "",
@@ -56,7 +56,7 @@ def extract_features_from_email(email_text, subject="", has_attachment=None, lin
         'links_count': 0,
         'sender_domain': "",
         'urgent_keywords': 0,
-        # Additional features with defaults
+        
         'email_length': 0,
         'subject_length': 0,
         'link_density': 0,
@@ -65,28 +65,28 @@ def extract_features_from_email(email_text, subject="", has_attachment=None, lin
         'html_tags': 0
     }
     
-    # Update with provided values
+    
     if has_attachment is not None:
         features['has_attachment'] = int(has_attachment)
     
-    # Count links if not provided
+    
     if links_count is None and email_text:
-        # More robust link counting
+        
         links = re.findall(r'https?://[^\s<>"\']+|www\.[^\s<>"\']+', email_text.lower())
         features['links_count'] = len(links)
     elif links_count is not None:
         features['links_count'] = int(links_count)
     
-    # Extract domain from email text if not provided
+    
     if sender_domain is None and email_text:
-        # Improved domain extraction
+       
         domain_match = re.search(
             r'[\w\.-]+@([\w\.-]+\.\w{2,})|https?://([\w\.-]+\.\w{2,})', 
             email_text.lower())
         if domain_match:
             features['sender_domain'] = domain_match.group(1) or domain_match.group(2)
     
-    # Detect urgent keywords if not provided
+    
     if urgent_keywords is None and email_text:
         urgent_phrases = ['urgent', 'immediate', 'action required', 'verify now', 
                          'security alert', 'account suspended', 'password expired',
@@ -95,19 +95,19 @@ def extract_features_from_email(email_text, subject="", has_attachment=None, lin
     elif urgent_keywords is not None:
         features['urgent_keywords'] = int(urgent_keywords)
     
-    # Calculate additional features
+   
     features['email_length'] = len(features['email_text'])
     features['subject_length'] = len(features['subject'])
     features['link_density'] = features['links_count'] / (features['email_length'] + 1)
     
-    # Domain features
+    
     domain_features = extract_domain_features(features['sender_domain'])
     features.update(domain_features)
     
-    # Special characters
+   
     features['special_chars'] = len(re.findall(r'[!$%^&*()_+|~=`{}\[\]:";\'<>?,./]', features['email_text']))
     
-    # HTML tags
+   
     features['html_tags'] = len(re.findall(r'<[^>]+>', features['email_text'].lower()))
     
     return features
@@ -119,7 +119,7 @@ def home():
 @app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
     try:
-        # Handle OPTIONS request for CORS preflight
+       
         if request.method == 'OPTIONS':
             response = jsonify({'status': 'preflight'})
             response.headers.add('Access-Control-Allow-Origin', '*')
@@ -127,14 +127,14 @@ def predict():
             response.headers.add('Access-Control-Allow-Methods', 'POST')
             return response
 
-        # Get data from request
+        
         data = request.get_json()
-        print("Received data:", data)  # Debugging
+        print("Received data:", data) 
         
         if not data:
             return jsonify({'error': 'No data received'}), 400
 
-        # Extract features with smart defaults
+        
         features = extract_features_from_email(
             email_text=data.get('email_text', ''),
             subject=data.get('subject', ''),
@@ -143,17 +143,17 @@ def predict():
             sender_domain=data.get('sender_domain'),
             urgent_keywords=data.get('urgent_keywords')
         )
-        print("Extracted features:", features)  # Debugging
+        print("Extracted features:", features) 
         
-        # Create a DataFrame with the features
+        
         input_data = pd.DataFrame([features])
         
-        # Make prediction
+        
         prediction = model.predict(input_data)
         probability = model.predict_proba(input_data)
-        print("Prediction results:", prediction, probability)  # Debugging
+        print("Prediction results:", prediction, probability)  
         
-        # Prepare response
+        
         response = {
             'prediction': 'phishing' if prediction[0] == 1 else 'legitimate',
             'probability': float(probability[0][1]),
@@ -167,7 +167,7 @@ def predict():
         return jsonify(response)
     
     except Exception as e:
-        print("Error:", str(e))  # Debugging
+        print("Error:", str(e)) 
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
