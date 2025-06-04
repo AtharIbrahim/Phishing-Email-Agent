@@ -12,6 +12,14 @@ PhishShield consists of:
 - **📁 Dataset:** 200,000 labeled email samples with 7 rich features for training and research.
 
 
+### Model Working
+
+<div align="center">
+  <img src="https://github.com/AtharIbrahim/Phishing-Email-Agent/blob/main/screenshots/working.png" height="400" alt="Main Interface">
+</div>
+
+
+
 # 🌟 Key Features
 
 ### 🚀 Real-time Detection
@@ -46,11 +54,6 @@ PhishShield consists of:
 
 ---
 # PhishShield Demo Walkthrough
-
-
-### Model Working
-<img src="https://github.com/AtharIbrahim/Phishing-Email-Agent/blob/main/screenshots/working.png" height="400" alt="Main Interface">
-
 
 
 ### Main Dashboard
