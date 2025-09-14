@@ -4,7 +4,7 @@ PhishShield is a powerful AI-driven phishing detection agent that analyzes email
 
 # 📌 Overview
 
-PhishShield consists of:
+PhishShield consists of
 
 - **🧠 Backend (Flask API):** ML-powered REST API for real-time predictions.
 - **🎨 Frontend (HTML/CSS/JS):** Interactive UI for email inspection and manual inputs.
