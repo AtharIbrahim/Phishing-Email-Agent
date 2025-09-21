@@ -1,6 +1,6 @@
 # 🛡️ PhishShield – Advanced Phishing Detection System
 
-PhishShield is a powerful AI-driven phishing detection agent that analyzes emails and web content to identify potential phishing threats in real-time. Using an intelligently trained **Random Forest** classifier on a dataset of **200k+ emails**, PhishShield leverages linguistic patterns, link analysis, and structural metadata to predict whether a message is phishing or legitimate with over **96% accuracy**.
+PhishShield is a powerful AI-driven phishing detection agent that analyzes emails and web content to identify potential phishing threats in real-time. Using an intelligently trained **Random Forest** classifier on a dataset of **200k+ emails**, PhishShield leverages linguistic patterns, link analysis, and structural metadata to predict whether a message is phishing or legitimate with over **96% of accuracy**.
 
 # 📌 Overview
 
