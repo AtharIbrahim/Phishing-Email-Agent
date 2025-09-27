@@ -9,7 +9,7 @@ PhishShield consists of
 - **🧠 Backend (Flask API):** ML-powered REST API for real-time predictions.
 - **🎨 Frontend (HTML/CSS/JS):** Interactive UI for email inspection and manual inputs.
 - **📊 ML Model:** Pre-trained model using advanced feature engineering.
-- **📁 Dataset:** 200,000 labeled email samples with 7 rich features for training and research.
+- **📁 Dataset:** 200,000 labeled email samples with 7 rich features for training and research..
 
 
 ### Model Working
